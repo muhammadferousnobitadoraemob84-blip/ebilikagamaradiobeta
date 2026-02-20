@@ -178,13 +178,12 @@ footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);}
  header{flex-direction:column;gap:10px;padding:12px 15px;text-align:center;}
  .top-tools{justify-content:center;}
  #twitch-embed{aspect-ratio:16/9;}
- .play-btn{width:100%;padding:14px;font-size:16px;
+ .play-btn{width:100%;padding:14px;font-size:16px;}
 }
 
 @media (max-width:420px){
- #twitch-embed{height:260px}
+ #twitch-embed{aspect-ratio:16/9;}
  .admin-btn,.mode-btn{font-size:14px;padding:6px 10px;}
-}
 }
 </style>
 </head>
@@ -230,7 +229,7 @@ footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);}
 
 <div class="admin-box">
 <h3>📡 Status Radio</h3>
-<select id="broadcastSel">
+<select id="broadcastSel" onchange="manualStatus()">
  <option value="offline">🔴 OFFLINE</option>
  <option value="online">🟢 ONLINE</option>
 </select>
@@ -320,6 +319,12 @@ function login(){
  el("adminPage").style.display = "block";
 }
 
+function manualStatus(){
+ if(!statusRef) return;
+ const v = el("broadcastSel").value;
+ statusRef.set(v);
+}
+
 function logout(){
  el("adminPage").style.display = "none";
  el("mainPage").style.display = "block";
@@ -328,6 +333,8 @@ function logout(){
 
 /* TWITCH */
 let pendingTwitch = "";
+let statusRef = null;
+let twitchPlayer = null;
 let channelRef = null;
 
 function loadTwitchPlayer(channel, targetId = "twitch-embed"){
@@ -346,7 +353,16 @@ function loadTwitchPlayer(channel, targetId = "twitch-embed"){
   ]
  };
 
- new Twitch.Player(targetId, options);
+ twitchPlayer = new Twitch.Player(targetId, options);
+
+ // AUTO STATUS BASED ON PLAYER
+ twitchPlayer.addEventListener(Twitch.Player.READY, ()=>{
+  if(statusRef) statusRef.set("online");
+ });
+
+ twitchPlayer.addEventListener(Twitch.Player.OFFLINE, ()=>{
+  if(statusRef) statusRef.set("offline");
+ });
 }
 
 function saveTwitch(){
@@ -398,11 +414,21 @@ window.addEventListener("load", function(){
  firebase.initializeApp(firebaseConfig);
  const db = firebase.database();
  channelRef = db.ref("settings/twitchChannel");
+ statusRef = db.ref("settings/status");
 
+ // LISTEN CHANNEL
  channelRef.on("value", snap=>{
   let ch = snap.val();
   if(!ch) ch = DEFAULT_CHANNEL;
   loadTwitchPlayer(ch, "twitch-embed");
+ });
+
+ // LISTEN STATUS
+ statusRef.on("value", snap=>{
+  const st = snap.val() || "offline";
+  const box = el("status");
+  box.innerText = st.toUpperCase();
+  box.style.background = st==="online" ? "rgba(0,180,0,0.4)" : "rgba(0,0,0,0.3)";
  });
 
 });
