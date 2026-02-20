@@ -183,6 +183,9 @@ footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);}
 
 @media (max-width:420px){
  #twitch-embed{aspect-ratio:16/9;}
+ #twitchPreview{height:260px;}
+ .admin-btn,.mode-btn{font-size:14px;padding:6px 10px;}
+}
  .admin-btn,.mode-btn{font-size:14px;padding:6px 10px;}
 }
 </style>
@@ -233,6 +236,7 @@ footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);}
  <option value="offline">🔴 OFFLINE</option>
  <option value="online">🟢 ONLINE</option>
 </select>
+<button class="play-btn" style="margin-top:10px" onclick="saveManualStatus()">💾 Simpan Status</button>
 </div>
 
 <div class="admin-box">
@@ -253,7 +257,7 @@ footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);}
  <div class="login-inner" style="max-width:420px;">
   <h3>📺 Sahkan Channel Twitch</h3>
   <p id="twitchConfirmText"></p>
-  <div id="twitchPreview" style="margin:10px 0;border-radius:20px;overflow:hidden;height:220px"></div>
+  <div id="twitchPreview" style="margin:10px 0;border-radius:20px;overflow:hidden;height:220px;max-height:60vh"></div>
   <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap">
    <button class="play-btn" onclick="confirmTwitchSave()">✅ Proceed</button>
    <button class="admin-btn" onclick="closeTwitchConfirm()">❌ Cancel</button>
@@ -325,6 +329,13 @@ function manualStatus(){
  statusRef.set(v);
 }
 
+function saveManualStatus(){
+ if(!statusRef) return;
+ const v = el("broadcastSel").value;
+ statusRef.set(v);
+ alert("Status disimpan");
+}
+
 function logout(){
  el("adminPage").style.display = "none";
  el("mainPage").style.display = "block";
@@ -356,7 +367,7 @@ function loadTwitchPlayer(channel, targetId = "twitch-embed"){
  twitchPlayer = new Twitch.Player(targetId, options);
 
  // AUTO STATUS BASED ON PLAYER
- twitchPlayer.addEventListener(Twitch.Player.READY, ()=>{
+ twitchPlayer.addEventListener(Twitch.Player.PLAYING, ()=>{
   if(statusRef) statusRef.set("online");
  });
 
