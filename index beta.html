@@ -7,447 +7,214 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
- --bg1:#081a33;
- --bg2:#1e90ff;
- --card:rgba(255,255,255,0.18);
- --text:#ffffff;
- --transition:0.4s cubic-bezier(.4,0,.2,1);
-}
-
-body{
- margin:0;
- font-family:'Poppins',sans-serif;
- background:linear-gradient(135deg,var(--bg1),var(--bg2));
- color:var(--text);
- min-height:100vh;
- transition:all var(--transition);
-}
-
-body.light{
- --bg1:#f4f7fb;
- --bg2:#dbe6ff;
- --card:rgba(0,0,0,0.08);
- --text:#111111;
-}
-
-header{
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:15px 25px;
- background:rgba(0,20,60,0.85);
- backdrop-filter:blur(15px);
- position:sticky;
- top:0;
- z-index:1000;
-}
-
-.school-name{font-size:15px;font-weight:600;}
-.radio-name{font-size:20px;font-weight:700;color:#aeefff;}
-.top-tools{display:flex;gap:12px;align-items:center;}
-
-button{
- border:none;
- cursor:pointer;
- font-family:inherit;
- border-radius:999px;
- transition:all 0.3s ease;
-}
-
-button:hover{
- transform:translateY(-2px) scale(1.03);
- box-shadow:0 8px 25px rgba(0,0,0,0.25);
-}
-
-button:active{transform:scale(0.95);}
-
-.admin-btn{
- padding:7px 15px;
- background:linear-gradient(45deg,#ffd700,#ffb700);
- font-weight:600;
-}
-
-.mode-btn{
- padding:6px 14px;
- font-size:18px;
- background:rgba(255,255,255,0.15);
-}
-
-.mode-btn.animate{
- transform:rotate(360deg) scale(1.3);
-}
-
-.play-btn{
- margin-top:18px;
- padding:14px 45px;
- font-size:18px;
- background:linear-gradient(45deg,#00c6ff,#00ffd5);
- color:#002233;
- font-weight:600;
-}
-
-.container{text-align:center;padding:25px 15px;}
-
-.hero-box,.player-container{
- max-width:900px;
- margin:20px auto;
- background:var(--card);
- backdrop-filter:blur(20px);
- padding:25px;
- border-radius:30px;
- box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
-
-#twitch-embed{
- width:100%;
- aspect-ratio:16/9;
- background:#000;
- overflow:hidden;
- border-radius:20px;
-}
-
-.status{
- display:inline-block;
- padding:6px 18px;
- border-radius:25px;
- font-weight:600;
- margin:12px 0;
- background:rgba(0,0,0,0.3);
-}
-
-.login-box{
- position:fixed;
- inset:0;
- background:rgba(0,0,0,0.85);
- display:none;
- justify-content:center;
- align-items:center;
- z-index:3000;
-}
-
-.login-inner{
- background:var(--card);
- padding:28px;
- border-radius:30px;
- width:90%;
- max-width:360px;
- text-align:center;
- box-shadow:0 15px 40px rgba(0,0,0,0.4);
-}
-
-.login-inner input{
- width:90%;
- padding:11px;
- margin:8px 0;
- border:none;
- border-radius:15px;
-}
-
-.admin-page{
- display:none;
- min-height:100vh;
- background:linear-gradient(135deg,#020d1f,#0b3d91);
- padding:25px 15px;
- color:white;
-}
-
-.admin-title{text-align:center;margin-bottom:15px;}
-
-.admin-box{
- background:rgba(255,255,255,0.12);
- padding:22px;
- border-radius:28px;
- margin:20px auto;
- max-width:800px;
- box-shadow:0 10px 25px rgba(0,0,0,0.3);
-}
-
-.admin-box input,.admin-box select{
- width:95%;
- padding:10px;
- border:none;
- border-radius:15px;
- margin-top:8px;
-}
-
-footer{text-align:center;padding:18px;opacity:0.8;background:rgba(0,0,0,0.3);} 
-
-@media (max-width:768px){
- header{flex-direction:column;gap:10px;padding:12px 15px;text-align:center;}
- .top-tools{justify-content:center;}
- #twitch-embed{aspect-ratio:16/9;}
- .play-btn{width:100%;padding:14px;font-size:16px;}
-}
-
-@media (max-width:420px){
- #twitch-embed{aspect-ratio:16/9;}
- #twitchPreview{height:260px;}
- .admin-btn,.mode-btn{font-size:14px;padding:6px 10px;}
-}
+:root{--bg1:#081a33;--bg2:#1e90ff;--card:rgba(255,255,255,0.18);--text:#ffffff;--transition:0.4s cubic-bezier(.4,0,.2,1);}body{margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--text);min-height:100vh;transition:all var(--transition);}body.light{--bg1:#f4f7fb;--bg2:#dbe6ff;--card:rgba(0,0,0,0.08);--text:#111111;}header{display:flex;align-items:center;justify-content:space-between;padding:15px 25px;background:rgba(0,20,60,0.85);backdrop-filter:blur(15px);position:sticky;top:0;z-index:1000;}button{border:none;cursor:pointer;font-family:inherit;border-radius:999px;transition:all .3s;}button:hover{transform:translateY(-2px) scale(1.03);}button:active{transform:scale(.95);}footer{text-align:center;padding:18px;opacity:.8;background:rgba(0,0,0,.3);}#twitch-embed{width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;}
+.login-box{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:2000}.login-inner{background:var(--card);padding:25px;border-radius:25px;width:90%;max-width:350px;text-align:center}
 </style>
 </head>
 <body>
 
 <header id="mainHeader">
  <div>
-  <div class="school-name">🏫 SMJK Chung Hwa Tenom</div>
-  <div class="radio-name">✨ eBilikAgama Radio</div>
+  <div>🏫 SMJK Chung Hwa Tenom</div>
+  <div>✨ eBilikAgama Radio</div>
  </div>
- <div class="top-tools">
-  <button class="admin-btn" id="adminBtn">🔒 Admin</button>
-  <button class="mode-btn" id="modeBtn">🌙</button>
+ <div>
+  <button id="adminBtn">🔒 Admin</button>
  </div>
 </header>
 
-<div class="container" id="mainPage">
-
-<div class="hero-box">
- <h2>🌟 Platform Penyiaran Kerohanian</h2>
- <div id="status" class="status">OFFLINE</div>
-</div>
-
-<div class="player-container">
- <div id="iftarVideoBox" style="margin-bottom:20px;display:none">
-  <video id="iftarVideo" controls style="width:100%;border-radius:20px"></video>
- </div>
+<div id="mainPage" style="display:none">
+ <div id="status">OFFLINE</div>
  <div id="twitch-embed"></div>
- <button class="play-btn" id="playBtn">🎧 DENGAR SIARAN</button>
+ <button id="playBtn">🎧 DENGAR SIARAN</button>
 </div>
 
-</div>
-
+<!-- LOGIN -->
 <div class="login-box" id="loginBox">
  <div class="login-inner">
-  <h3>🔐 Admin Login</h3>
-  <input type="text" id="user" placeholder="Username">
-  <input type="password" id="pass" placeholder="Password">
-  <button class="play-btn" onclick="login()">Masuk</button>
-  <p id="loginError" style="color:#ff7777"></p>
+  <h3>🔐 Login Pelajar</h3>
+  <input id="loginName" placeholder="Nama Pelajar"><br><br>
+  <input id="loginPass" type="password" placeholder="Password"><br><br>
+  <button id="loginBtn">Masuk</button>
+  <p id="loginMsg"></p>
  </div>
 </div>
 
-<div class="admin-page" id="adminPage">
-<h2 class="admin-title">⚙️ Admin Dashboard</h2>
+<!-- ADMIN PAGE -->
+<div id="adminPage" style="display:none;padding:20px">
+ <h2>⚙️ Admin Dashboard</h2>
 
-<div class="admin-box">
-<h3>📡 Status Radio</h3>
-<select id="broadcastSel">
- <option value="offline">🔴 OFFLINE</option>
- <option value="online">🟢 ONLINE</option>
-</select>
-<button class="play-btn" style="margin-top:10px" onclick="saveManualStatus()">💾 Simpan Status</button>
-</div>
+ <h3>👤 Register User</h3>
+ <input id="regName" placeholder="Nama"><br><br>
+ <input id="regPass" placeholder="Password"><br><br>
+ <select id="regRole">
+  <option value="user">Pelajar</option>
+  <option value="admin">Admin</option>
+ </select><br><br>
+ <button id="regBtn">Daftar</button>
 
-<div class="admin-box">
-<h3>📺 Twitch Live Channel</h3>
-<input type="text" id="twitchChannel" placeholder="contoh: bilikagamaradio">
-<button class="play-btn" onclick="saveTwitch()">💾 Simpan Channel</button>
-<p id="twitchStatus" style="font-size:13px;opacity:0.8"></p>
-</div>
+ <h3>📋 Senarai User</h3>
+ <div id="userList"></div><br>
 
-<div class="admin-box">
-<h3>📽️ Video Berbuka / Imsak (Maks 30)</h3>
-<input type="file" id="videoUpload" accept="video/*" multiple>
-<button class="play-btn" onclick="startVideoSetup()">➡️ Step 1: Pilih Video</button>
-<p id="videoInfo" style="font-size:13px;opacity:0.8"></p>
+ <button onclick="logout()">Logout</button>
 </div>
-
-<div class="admin-box" id="videoStep2" style="display:none">
-<h3>🗓️ Tetapkan Tarikh Video</h3>
-<select id="videoSelect"></select>
-<input type="date" id="videoDate">
-<button class="play-btn" onclick="saveVideoSchedule()">💾 Simpan Video</button>
-</div>
-
-<div style="text-align:center">
-<button class="admin-btn" onclick="logout()">🚪 Logout</button>
-</div>
-</div>
-
-<footer>© 2026 SMJK Chung Hwa Tenom • eBilikAgama Radio</footer>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 
 <script>
 
-const DEFAULT_CHANNEL="ebilikaagamaradio";
-const el=id=>document.getElementById(id);
-
-let statusRef=null;
-let channelRef=null;
-let videoRef=null;
-let storageRef=null;
-let videoFiles=[];
-let twitchPlayer=null;
-let pendingTwitch="";
-let isPlaying=false;
-
-const admins=[
+/* DEFAULT ADMIN */
+const defaultAdmins=[
  {u:"muhammadferousadmin",p:"ferousadmin123"},
  {u:"ustazredhuanadmin",p:"redhuanadmin567"}
 ];
 
-const modeBtn=el("modeBtn");
+const el=id=>document.getElementById(id);
 
-if(localStorage.getItem("theme")==="light"){
- document.body.classList.add("light");
- modeBtn.textContent="☀️";
+let db=null;
+let usersRef=null;
+let twitchPlayer=null;
+let firebaseReady=false;
+
+/* HASH */
+async function hash(text){
+ const enc=new TextEncoder().encode(text);
+ const buf=await crypto.subtle.digest("SHA-256",enc);
+ return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-modeBtn.onclick=()=>{
- document.body.classList.toggle("light");
- const l=document.body.classList.contains("light");
- modeBtn.textContent=l?"☀️":"🌙";
- localStorage.setItem("theme",l?"light":"dark");
-};
+/* INIT */
+document.addEventListener("DOMContentLoaded",()=>{
 
-el("adminBtn").onclick=()=>el("loginBox").style.display="flex";
-
-function login(){
- const u=el("user").value.trim();
- const p=el("pass").value.trim();
- const ok=admins.find(a=>a.u===u&&a.p===p);
- if(!ok){el("loginError").innerText="❌ Login gagal";return;}
- el("loginBox").style.display="none";
- el("mainPage").style.display="none";
  el("mainHeader").style.display="none";
- el("adminPage").style.display="block";
+ el("mainPage").style.display="none";
+ el("loginBox").style.display="flex";
+
+ const cfg={
+  apiKey:"AIzaSyDAfAxKOPx_5NqskY9dsUjXDqR6NObS780",
+  authDomain:"ebilikagama-radio.firebaseapp.com",
+  databaseURL:"https://ebilikagama-radio-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"ebilikagama-radio"
+ };
+
+ try{
+  if(!firebase.apps.length){
+   firebase.initializeApp(cfg);
+  }
+
+  db=firebase.database();
+  usersRef=db.ref("users");
+  firebaseReady=true;
+
+  loadUsers();
+  loadTwitch();
+
+ }catch(e){
+  console.error("Firebase error:",e);
+ }
+
+ el("loginBtn").onclick=studentLogin;
+ el("regBtn").onclick=registerUser;
+ el("adminBtn").onclick=()=>el("loginBox").style.display="flex";
+ el("playBtn").onclick=()=>{if(twitchPlayer)twitchPlayer.play();};
+});
+
+/* LOGIN */
+async function studentLogin(){
+ if(!firebaseReady||!usersRef){
+  alert("Sistem belum siap. Refresh semula.");
+  return;
+ }
+
+ const n=el("loginName").value.trim();
+ const p=el("loginPass").value.trim();
+ const h=await hash(p);
+
+ const admin=defaultAdmins.find(a=>a.u===n&&a.p===p);
+ if(admin){openAdmin();return;}
+
+ usersRef.child(n).once("value").then(s=>{
+  const d=s.val();
+
+  if(!d||d.pass!==h){
+   el("loginMsg").innerText="❌ Login gagal";
+   return;
+  }
+
+  el("loginBox").style.display="none";
+  el("mainHeader").style.display="flex";
+  el("mainPage").style.display="block";
+ });
 }
 
-function logout(){
- el("adminPage").style.display="none";
- el("mainPage").style.display="block";
- el("mainHeader").style.display="flex";
+/* REGISTER */
+async function registerUser(){
+ if(!firebaseReady||!usersRef){
+  alert("Firebase belum siap");
+  return;
+ }
+
+ const n=el("regName").value.trim();
+ const p=el("regPass").value.trim();
+ const r=el("regRole").value;
+
+ if(!n||!p)return alert("Lengkapkan data");
+
+ const h=await hash(p);
+
+ await usersRef.child(n).set({pass:h,role:r});
+ alert("User didaftarkan");
+ loadUsers();
 }
 
-function saveManualStatus(){
- if(statusRef){
-  statusRef.set(el("broadcastSel").value);
-  alert("Status disimpan");
+/* USERS */
+function loadUsers(){
+ if(!usersRef)return;
+
+ usersRef.off();
+ usersRef.on("value",s=>{
+  const box=el("userList");
+  box.innerHTML="";
+
+  const data=s.val()||{};
+
+  Object.keys(data).forEach(k=>{
+   const u=data[k];
+   const d=document.createElement("div");
+   d.innerHTML=`${k} (${u.role}) <button onclick=\"delUser('${k}')\">❌</button>`;
+   box.appendChild(d);
+  });
+ });
+}
+
+function delUser(n){
+ if(!usersRef)return;
+ if(confirm("Padam user?")){
+  usersRef.child(n).remove();
  }
 }
 
-function loadTwitchPlayer(channel,target="twitch-embed"){
- isPlaying=false;
- updatePlayBtn();
- const box=el(target);
- if(!box)return;
- box.innerHTML="";
- twitchPlayer=new Twitch.Player(target,{
-  channel,
+/* ADMIN */
+function openAdmin(){
+ el("loginBox").style.display="none";
+ el("adminPage").style.display="block";
+}
+
+function logout(){location.reload();}
+
+/* TWITCH */
+function loadTwitch(){
+ const ch="ebilikaagamaradio";
+
+ twitchPlayer=new Twitch.Player("twitch-embed",{
+  channel:ch,
   width:"100%",
   height:"100%",
   parent:[location.hostname]
  });
 }
-
-function saveTwitch(){
- const ch=el("twitchChannel").value.trim();
- if(!ch)return alert("Masukkan username Twitch");
- pendingTwitch=ch;
- channelRef&&channelRef.set(ch);
- el("twitchStatus").innerText="✅ Disimpan";
-}
-
-function startVideoSetup(){
- const files=el("videoUpload").files;
- if(!files.length)return alert("Pilih video");
- if(files.length>30)return alert("Maks 30 video");
- videoFiles=[...files];
- const sel=el("videoSelect");
- sel.innerHTML="";
- videoFiles.forEach((f,i)=>{
-  const o=document.createElement("option");
-  o.value=i;o.textContent=f.name;
-  sel.appendChild(o);
- });
- el("videoInfo").innerText=files.length+" video dipilih";
- el("videoStep2").style.display="block";
-}
-
-async function saveVideoSchedule(){
- const i=el("videoSelect").value;
- const d=el("videoDate").value;
- if(!d)return alert("Pilih tarikh");
- const file=videoFiles[i];
- if(!file)return alert("Fail tiada");
- if(!storageRef||!videoRef)return alert("Firebase belum siap");
- try{
-  const path="iftarVideos/"+Date.now()+"_"+file.name;
-  const ref=storageRef.child(path);
-  const snap=await ref.put(file);
-  const url=await snap.ref.getDownloadURL();
-  await videoRef.child(d).set(url);
-  alert("Video disimpan");
- }catch(e){alert(e.message);}
-}
-
-function togglePlay(){
- if(!twitchPlayer) return alert("Player belum siap");
- if(isPlaying){
-  twitchPlayer.pause();
-  isPlaying=false;
- }else{
-  twitchPlayer.play();
-  isPlaying=true;
- }
- updatePlayBtn();
-}
-
-function updatePlayBtn(){
- const btn=el("playBtn");
- if(!btn)return;
- btn.innerText=isPlaying?"⏸️ HENTI SIARAN":"🎧 DENGAR SIARAN";
-}
-
-function loadIftarVideo(data){
- const t=new Date().toISOString().slice(0,10);
- if(data&&data[t]){
-  el("iftarVideo").src=data[t];
-  el("iftarVideoBox").style.display="block";
- }
-}
-
-window.addEventListener("load",()=>{
- const btn=el("playBtn");
- if(btn) btn.onclick=togglePlay;
-
- const firebaseConfig={
-  apiKey:"AIzaSyDAfAxKOPx_5NqskY9dsUjXDqR6NObS780",
-  authDomain:"ebilikagama-radio.firebaseapp.com",
-  databaseURL:"https://ebilikagama-radio-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"ebilikagama-radio",
-  storageBucket:"ebilikagama-radio.appspot.com",
-  messagingSenderId:"580483403093",
-  appId:"1:580483403093:web:479d353874539c045273dc"
- };
-
- firebase.initializeApp(firebaseConfig);
- const db=firebase.database();
-
- statusRef=db.ref("settings/status");
- channelRef=db.ref("settings/twitchChannel");
- videoRef=db.ref("settings/iftarVideos");
- storageRef=firebase.storage().ref();
-
- channelRef.on("value",s=>{
-  let ch=s.val()||DEFAULT_CHANNEL;
-  loadTwitchPlayer(ch);
- });
-
- statusRef.on("value",s=>{
-  const v=s.val()||"offline";
-  const box=el("status");
-  box.innerText=v.toUpperCase();
-  box.style.background=v==="online"?"rgba(0,180,0,.4)":"rgba(0,0,0,.3)";
- });
-
- videoRef.on("value",s=>loadIftarVideo(s.val()));
-});
 
 </script>
 </body>
