@@ -8,7 +8,6 @@
 
 <style>
 :root{--bg1:#081a33;--bg2:#1e90ff;--card:rgba(255,255,255,0.18);--text:#ffffff;--transition:0.4s cubic-bezier(.4,0,.2,1);}body{margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--text);min-height:100vh;transition:all var(--transition);}body.light{--bg1:#f4f7fb;--bg2:#dbe6ff;--card:rgba(0,0,0,0.08);--text:#111111;}header{display:flex;align-items:center;justify-content:space-between;padding:15px 25px;background:rgba(0,20,60,0.85);backdrop-filter:blur(15px);position:sticky;top:0;z-index:1000;}button{border:none;cursor:pointer;font-family:inherit;border-radius:999px;transition:all .3s;}button:hover{transform:translateY(-2px) scale(1.03);}button:active{transform:scale(.95);}footer{text-align:center;padding:18px;opacity:.8;background:rgba(0,0,0,.3);}#twitch-embed{width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;}
-.login-box{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:2000}.login-inner{background:var(--card);padding:25px;border-radius:25px;width:90%;max-width:350px;text-align:center}
 </style>
 </head>
 <body>
@@ -23,27 +22,16 @@
  </div>
 </header>
 
-<div id="mainPage" style="display:none">
+<div id="mainPage">
  <div id="status">OFFLINE</div>
  <div id="twitch-embed"></div>
  <button id="playBtn">🎧 DENGAR SIARAN</button>
-</div>
-
-<!-- LOGIN -->
-<div class="login-box" id="loginBox">
- <div class="login-inner">
-  <h3>🔐 Login Pelajar</h3>
-  <input id="loginName" placeholder="Nama Pelajar"><br><br>
-  <input id="loginPass" type="password" placeholder="Password"><br><br>
-  <button id="loginBtn">Masuk</button>
-  <p id="loginMsg"></p>
- </div>
+ <div id="nowPlaying" style="margin-top:12px;font-weight:600;opacity:0.85">🎵 Sedang mendapatkan maklumat siaran...</div>
 </div>
 
 <!-- ADMIN PAGE -->
 <div id="adminPage" style="display:none;padding:20px">
  <h2>⚙️ Admin Dashboard</h2>
-
  <h3>👤 Register User</h3>
  <input id="regName" placeholder="Nama"><br><br>
  <input id="regPass" placeholder="Password"><br><br>
@@ -52,10 +40,8 @@
   <option value="admin">Admin</option>
  </select><br><br>
  <button id="regBtn">Daftar</button>
-
  <h3>📋 Senarai User</h3>
  <div id="userList"></div><br>
-
  <button onclick="logout()">Logout</button>
 </div>
 
@@ -65,7 +51,6 @@
 
 <script>
 
-/* DEFAULT ADMIN */
 const defaultAdmins=[
  {u:"muhammadferousadmin",p:"ferousadmin123"},
  {u:"ustazredhuanadmin",p:"redhuanadmin567"}
@@ -76,9 +61,7 @@ const el=id=>document.getElementById(id);
 let db=null;
 let usersRef=null;
 let twitchPlayer=null;
-let firebaseReady=false;
 
-/* HASH */
 async function hash(text){
  const enc=new TextEncoder().encode(text);
  const buf=await crypto.subtle.digest("SHA-256",enc);
@@ -88,10 +71,6 @@ async function hash(text){
 /* INIT */
 document.addEventListener("DOMContentLoaded",()=>{
 
- el("mainHeader").style.display="none";
- el("mainPage").style.display="none";
- el("loginBox").style.display="flex";
-
  const cfg={
   apiKey:"AIzaSyDAfAxKOPx_5NqskY9dsUjXDqR6NObS780",
   authDomain:"ebilikagama-radio.firebaseapp.com",
@@ -99,110 +78,65 @@ document.addEventListener("DOMContentLoaded",()=>{
   projectId:"ebilikagama-radio"
  };
 
- try{
-  if(!firebase.apps.length){
-   firebase.initializeApp(cfg);
-  }
-
-  db=firebase.database();
-  usersRef=db.ref("users");
-  firebaseReady=true;
-
-  loadUsers();
-  loadTwitch();
-
- }catch(e){
-  console.error("Firebase error:",e);
+ if(!firebase.apps.length){
+  firebase.initializeApp(cfg);
  }
 
- el("loginBtn").onclick=studentLogin;
+ db=firebase.database();
+ usersRef=db.ref("users");
+
+ loadUsers();
+ loadTwitch();
+
+ el("adminBtn").onclick=()=>el("adminPage").style.display="block";
+ el("playBtn").onclick=()=>{ if(twitchPlayer) twitchPlayer.play(); };
  el("regBtn").onclick=registerUser;
- el("adminBtn").onclick=()=>el("loginBox").style.display="flex";
- el("playBtn").onclick=()=>{if(twitchPlayer)twitchPlayer.play();};
 });
 
-/* LOGIN */
-async function studentLogin(){
- if(!firebaseReady||!usersRef){
-  alert("Sistem belum siap. Refresh semula.");
-  return;
- }
-
- const n=el("loginName").value.trim();
- const p=el("loginPass").value.trim();
- const h=await hash(p);
-
- const admin=defaultAdmins.find(a=>a.u===n&&a.p===p);
- if(admin){openAdmin();return;}
-
- usersRef.child(n).once("value").then(s=>{
-  const d=s.val();
-
-  if(!d||d.pass!==h){
-   el("loginMsg").innerText="❌ Login gagal";
-   return;
-  }
-
-  el("loginBox").style.display="none";
-  el("mainHeader").style.display="flex";
-  el("mainPage").style.display="block";
- });
-}
-
-/* REGISTER */
+/* REGISTER USER */
 async function registerUser(){
- if(!firebaseReady||!usersRef){
-  alert("Firebase belum siap");
-  return;
- }
+ if(!usersRef) return;
 
  const n=el("regName").value.trim();
  const p=el("regPass").value.trim();
  const r=el("regRole").value;
 
- if(!n||!p)return alert("Lengkapkan data");
+ if(!n||!p) return alert("Lengkapkan data");
 
  const h=await hash(p);
-
  await usersRef.child(n).set({pass:h,role:r});
  alert("User didaftarkan");
  loadUsers();
 }
 
-/* USERS */
 function loadUsers(){
- if(!usersRef)return;
+ if(!usersRef) return;
 
  usersRef.off();
  usersRef.on("value",s=>{
   const box=el("userList");
   box.innerHTML="";
-
   const data=s.val()||{};
 
   Object.keys(data).forEach(k=>{
    const u=data[k];
    const d=document.createElement("div");
-   d.innerHTML=`${k} (${u.role}) <button onclick=\"delUser('${k}')\">❌</button>`;
+   d.innerHTML=`${k} (${u.role}) <button onclick="delUser('${k}')">❌</button>`;
    box.appendChild(d);
   });
  });
 }
 
 function delUser(n){
- if(!usersRef)return;
+ if(!usersRef) return;
  if(confirm("Padam user?")){
   usersRef.child(n).remove();
  }
 }
 
-/* ADMIN */
-function openAdmin(){
- el("loginBox").style.display="none";
- el("adminPage").style.display="block";
+function logout(){
+ el("adminPage").style.display="none";
 }
-
-function logout(){location.reload();}
 
 /* TWITCH */
 function loadTwitch(){
@@ -214,8 +148,20 @@ function loadTwitch(){
   height:"100%",
   parent:[location.hostname]
  });
+
+ fetchNowPlaying(ch);
+ setInterval(()=>fetchNowPlaying(ch),60000);
 }
 
-</script>
-</body>
-</html>
+function fetchNowPlaying(channel){
+ fetch("https://noembed.com/embed?url=https://www.twitch.tv/"+channel)
+ .then(r=>r.json())
+ .then(data=>{
+   if(data && data.title){
+     el("nowPlaying").innerText="🎵 Sekarang: "+data.title;
+   }else{
+     el("nowPlaying").innerText="🎵 Tiada maklumat siaran";
+   }
+ })
+ .catch(()=>{
+   el("nowPlaying").innerText="🎵 Tidak dapat ambil maklumat
