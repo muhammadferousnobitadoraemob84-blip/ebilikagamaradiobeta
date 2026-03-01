@@ -26,6 +26,7 @@
  <div id="status">OFFLINE</div>
  <div id="twitch-embed"></div>
  <button id="playBtn">🎧 DENGAR SIARAN</button>
+<div id="nowPlaying" style="margin-top:12px;font-weight:600;opacity:0.85;text-align:center">🎵 Sedang mendapatkan maklumat siaran...</div>
  <div id="nowPlaying" style="margin-top:12px;font-weight:600;opacity:0.85">🎵 Sedang mendapatkan maklumat siaran...</div>
 </div>
 
@@ -149,8 +150,26 @@ function loadTwitch(){
   parent:[location.hostname]
  });
 
- fetchNowPlaying(ch);
- setInterval(()=>fetchNowPlaying(ch),60000);
+ updateNowPlaying(ch);
+ setInterval(()=>updateNowPlaying(ch),60000);
+}
+
+function updateNowPlaying(channel){
+ const elNow=document.getElementById("nowPlaying");
+ if(!elNow) return;
+
+ fetch("https://api.allorigins.win/raw?url="+encodeURIComponent("https://noembed.com/embed?url=https://www.twitch.tv/"+channel))
+ .then(r=>r.json())
+ .then(data=>{
+   if(data && data.title){
+     elNow.innerText="🎵 Sekarang: "+data.title;
+   }else{
+     elNow.innerText="🎵 Tiada maklumat siaran";
+   }
+ })
+ .catch(()=>{
+   elNow.innerText="🎵 Tidak dapat ambil maklumat";
+ });
 }
 
 function fetchNowPlaying(channel){
@@ -164,4 +183,10 @@ function fetchNowPlaying(channel){
    }
  })
  .catch(()=>{
-   el("nowPlaying").innerText="🎵 Tidak dapat ambil maklumat
+   el("nowPlaying").innerText="🎵 Tidak dapat ambil maklumat";
+ });
+}
+
+</script>
+</body>
+</html>
